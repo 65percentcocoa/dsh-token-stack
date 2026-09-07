@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-token-stack",
-  "description": "Cross-session memory + token-efficiency stack for DeepSeek Harness: capture/compress/recall memory, terse output style, tool-output noise filter, native settings toggle.",
+  "name": "dsh-token-stack",
   "version": "0.1.0",
+  "description": "Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH): capture tool evidence, compress it into facts/preferences/constraints, inject once per session, tersen output, and filter tool-output noise — with native settings toggles.",
   "type": "module",
   "main": "index.js",
   "types": "lib/types/index.d.ts",
@@ -17,7 +17,25 @@
     "lib/index.js",
     "lib/types/**/*.d.ts"
   ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "memory",
+    "cross-session",
+    "token-efficiency",
+    "claude-mem",
+    "caveman"
+  ],
+  "author": "65percentcocoa",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "scripts": {
+    "prepublishOnly": "node --check index.js && node --check lib/index.js"
+  },
   "dependencies": {
     "@deepseek-ai/schemastery": "^3.18.1"
   },

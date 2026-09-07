@@ -216,7 +216,7 @@ toggle 接入 `settings` 服务、把捕获/过滤逻辑打包成可挂载 packa
 
 ### 产物
 
-- **package `@deepseek-ai/dsh-token-stack`**(源码 `D:\DSWorkSpace\packages\dsh-token-stack\`):
+- **package `dsh-token-stack`**(源码 `D:\DSWorkSpace\packages\dsh-token-stack\`):
   - `package.json`(type:module, main:lib/index.js, exports, peerDeps cordis/dsh-system-prompt/dsh-settings/dsh-tools)。
   - `lib/index.js`:导出 `name`/`inject`/`Config`(z)/`apply(ctx,config)`;apply 内注册 settings 命名空间、
     两个 model 工具(`token_stack_remember`/`token_stack_config`)、两个 prompt section(记忆仅首步注入 + terse)、
@@ -229,7 +229,7 @@ toggle 接入 `settings` 服务、把捕获/过滤逻辑打包成可挂载 packa
 
 ### 验证
 
-- ✅ **可解析 + 可加载**:从部署解析上下文 `import('@deepseek-ai/dsh-token-stack')` 成功,导出
+- ✅ **可解析 + 可加载**:从部署解析上下文 `import('dsh-token-stack')` 成功,导出
   `Config,SettingsSchema,apply,inject,name=token-stack`;`node --check lib/index.js` 通过。
 - ✅ **挂载成功(mount-validate)**:用探针调用 `agentPresets.standingKeyFor('token-stack')`,
   结果 `MOUNT_OK token-stack`——包可解析、组合有效、`apply()` 运行无错(注册 settings 命名空间/
@@ -242,7 +242,7 @@ toggle 接入 `settings` 服务、把捕获/过滤逻辑打包成可挂载 packa
 2. **默认入口**:加载器对 preset 行把裸包名解析到**包目录**后找**根 `index.js`**(dsh 包是 pnpm 正式依赖走
    exports;手放/junction 目录则需根 `index.js`)。故 `main`/`exports."."` 都指向**根 `index.js`**(再转出 lib)。
 3. **必须让部署/Profile 能解析到包**:preset 行的裸包名从 **host/Profile 组合的 base** 解析(非部署主 node_modules)。
-   本地包需在 `~/.dsh/profiles/web/node_modules/@deepseek-ai/dsh-token-stack` 建 **junction** 指向包目录,
+   本地包需在 `~/.dsh/profiles/web/node_modules/dsh-token-stack` 建 **junction** 指向包目录,
    且包内依赖要可向上解析——把 `copy` 放到 `…\@deepseek-ai\dsh\node_modules\@deepseek-ai\dsh-token-stack`
    再 junction 到它,依赖即可解析。
 4. 否则会依次报:`Cannot find package …`(不可解析)→ `Cannot find package '…\index.js'`(缺根入口)→

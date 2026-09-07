@@ -1,4 +1,4 @@
-# @deepseek-ai/dsh-token-stack
+# dsh-token-stack
 
 Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 
@@ -26,7 +26,7 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 
 ```yaml
 - id: token-stack
-  name: '@deepseek-ai/dsh-token-stack'
+  name: 'dsh-token-stack'
   config:
     memoryFile: '~/.dsh/dsh-memory/memory.json'
     terse: true

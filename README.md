@@ -28,7 +28,7 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 - id: token-stack
   name: '@deepseek-ai/dsh-token-stack'
   config:
-    memoryFile: 'C:/Users/luerz/.dsh/dsh-memory/memory.json'
+    memoryFile: '~/.dsh/dsh-memory/memory.json'
     terse: true
     memory: true
     filter: true

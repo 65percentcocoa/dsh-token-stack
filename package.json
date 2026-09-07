@@ -34,6 +34,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "test": "node test/smoke.mjs",
     "prepublishOnly": "node --check index.js && node --check lib/index.js"
   },
   "dependencies": {

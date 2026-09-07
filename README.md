@@ -34,7 +34,7 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
     filter: true
 ```
 
-完整组合示例见 `docs/design.md` 的"十一、打包成可挂载 package"(含 `standard` 副本 + 该行)。
+完整组合示例见仓库 `standard` 预设副本加上述行;挂载/开发细节见下文。
 
 ## 开发
 

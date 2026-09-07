@@ -100,7 +100,7 @@ L1 记忆与 L3 输入过滤要**跨会话、跨重启生效**,其代码承载�
 以**动态 Cordis Plugin(host 一半)**实现三层,并在当前会话用真实 DSH 服务验证通过:
 
 - **L1 记忆(捕获+落盘+注入)**:监听 `tools/result` 捕获工具结果(截断 400 字),写到
-  `C:/Users/luerz/.dsh/dsh-memory/memory.json`(DSH 家目录,跨会话耐久);`agent/turn-stopping` 时冲刷落盘;
+  `~/.dsh/dsh-memory/memory.json`(DSH 家目录,跨会话耐久);`agent/turn-stopping` 时冲刷落盘;
   并用 `systemPrompt.section()` 注入近段记忆(≤5 条)。✅ 已验证捕获持久化成功。
 - **L2 terse 输出**:`systemPrompt.section()` 注册"任务感知"的简洁风格规则(探索/脚手架类 terse,
   评审/疑难调试类保留详细)。✅ 已注册,运行无错。
@@ -108,7 +108,7 @@ L1 记忆与 L3 输入过滤要**跨会话、跨重启生效**,其代码承载�
   对 >6000 字符的文本块截断并追加标记。✅ 已验证真实截断(7000 字 → 6000 字)。
 
 **关键经验**:`fs.resolve` 对**相对路径**解析基准并非会话工作区(实测落到别处),必须用**绝对路径**。
-为此把记忆文件放在 DSH 家目录绝对路径(`C:/Users/luerz/.dsh/dsh-memory/memory.json`)。
+为此把记忆文件放在 DSH 家目录绝对路径(`~/.dsh/dsh-memory/memory.json`)。
 
 **已知限制 / 后续**:
 - 动态插件进程内、重启即失;仍需升级为持久挂载(package/preset 行)才能重启后仍注入。

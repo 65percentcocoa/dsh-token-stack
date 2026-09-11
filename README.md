@@ -20,6 +20,21 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 `ctx.settings.register('tokenStack', …)` 注册命名空间;运行时开关经 `ctx.settings.get` 读、
 `token_stack_config` 工具经 `ctx.settings.update` 写。字段:`terse`/`memory`/`filter`/`recallLimit`。
 
+## 统计(省了多少 token?)
+
+`token_stack_stats` 工具返回累计统计(落盘 `~/.dsh/dsh-memory/stats.json`,跨会话累计):
+
+- **`filter.tokensSaved`** — **可精确统计**:每次截断时用 `tokenMeter.estimateMessage` 估
+  `原文 tokens − 截断后 tokens`,累计即"工具输出噪声里真正从模型眼前省掉的 token"。这是唯一可以
+  如实报"省"的数字(`filter.calls` 为截断次数)。
+- **`memory.*`** — 记忆层的**成本与规模**:`sessionsInjected`(注入了几次)、`tokensInjected`(注入共花多少
+  token)、`entriesAdded`/`dedupHits`/`recalls`。注意:注入是**成本**;"记忆省了多少"是**反事实**,
+  本工具不编造该数字。
+- **`terse`** — 明确标注 `measured: false`:输出变短是"省",但没有 verbose 对照组无法量化。
+
+要真正量化 L1/L2 的省,只能 **A/B**:同一批任务开/关插件各跑一遍,比较实际 token 用量
+(LLM 调用的 `usage` / `sessionTelemetry`),差值才是真"省"。
+
 ## 安装(host 层插件,一次装、所有 agent 生效)
 
 本包声明了 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }`,所以作为 **profile bundle** 安装时,

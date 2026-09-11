@@ -1,0 +1,19 @@
+# dsh-token-stack — bundle patch list.
+#
+# Declared through package.json `dsh.bundle.patch`, so installing this package
+# as a profile bundle composes this row into the host tree automatically:
+#
+#     dsh plugin --profile web add dsh-token-stack
+#
+# The patch has no `id`, so its `insert` list is appended at the TOP LEVEL of
+# the host composition: the plugin mounts ONCE for the whole process and thus
+# applies to EVERY agent/session — no preset switching, no per-preset double
+# mount. (Do not also add this row by hand in the profile's cordis.patch.yml;
+# that would mount it twice and collide on the `tokenStack` settings namespace.)
+- insert:
+    - id: token-stack
+      name: dsh-token-stack
+      config:
+        terse: true
+        memory: true
+        filter: true

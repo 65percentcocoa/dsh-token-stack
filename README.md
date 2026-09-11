@@ -18,22 +18,45 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 ## 原生 settings
 
 `ctx.settings.register('tokenStack', …)` 注册命名空间;运行时开关经 `ctx.settings.get` 读、
-`token_stack_config` 工具经 `ctx.settings.update` 写。字段:`terse`/`memory`/`filter`/`recallLimit`。
+`token_stack_config` 工具经 `ctx.settings.update` 写。字段:`terse`/`memory`/`filter`/`recallLimit`/`abControl`。
 
-## 统计(省了多少 token?)
+## 统计(省了多少 token?)与 A/B 对照
 
-`token_stack_stats` 工具返回累计统计(落盘 `~/.dsh/dsh-memory/stats.json`,跨会话累计):
+### 一条命令看统计(GUI,不用问 agent)
+
+直接在输入框发:
+
+```
+/token-stack            # 或 /token-stack stats —— 打印统计
+/token-stack off        # A/B 对照:临时关掉全部层(跑任务)
+/token-stack on         # 恢复正常
+/token-stack set filter=false recallLimit=5   # 改任意开关(立即生效)
+```
+
+统计落盘 `~/.dsh/dsh-memory/stats.json`,**跨会话累计**;也可让 agent 调 `token_stack_stats` 工具。
+
+### 字段
 
 - **`filter.tokensSaved`** — **可精确统计**:每次截断时用 `tokenMeter.estimateMessage` 估
   `原文 tokens − 截断后 tokens`,累计即"工具输出噪声里真正从模型眼前省掉的 token"。这是唯一可以
   如实报"省"的数字(`filter.calls` 为截断次数)。
-- **`memory.*`** — 记忆层的**成本与规模**:`sessionsInjected`(注入了几次)、`tokensInjected`(注入共花多少
-  token)、`entriesAdded`/`dedupHits`/`recalls`。注意:注入是**成本**;"记忆省了多少"是**反事实**,
-  本工具不编造该数字。
+- **`filter.byTool`** — **按工具**细分(每个工具的 `calls` / `tokensSaved`),看清噪声主要来自谁。
+- **`memory.*`** — 记忆层的**成本与规模**:`sessionsInjected`(注入几次)、`tokensInjected`(注入共花多少
+  token)、`entriesAdded`/`dedupHits`/`recalls`,以及 `memory.byTool`(按工具记了多少条)。
+  ⚠️ 注入是**成本**;"记忆省了多少"是**反事实**,本工具不编造该数字。
+- **`bySession`** — **按会话**细分:每个 session 的 `filterCalls` / `tokensSaved` / `memoryEntries`。
 - **`terse`** — 明确标注 `measured: false`:输出变短是"省",但没有 verbose 对照组无法量化。
 
-要真正量化 L1/L2 的省,只能 **A/B**:同一批任务开/关插件各跑一遍,比较实际 token 用量
-(LLM 调用的 `usage` / `sessionTelemetry`),差值才是真"省"。
+> 明细表有上限(工具 top-30、会话 top-50)以保持文件与输出有界。
+
+### A/B 对照怎么做
+
+```
+/token-stack off   →  跑你的任务  →  记下实际 token 用量(LLM usage / sessionTelemetry)
+/token-stack on    →  跑同类任务  →  再记一次
+```
+
+两次的实际用量之差,才是 L1/L2 真实的"省"。`stats.json` 里 `filter.tokensSaved` 可作交叉印证。
 
 ## 安装(host 层插件,一次装、所有 agent 生效)
 

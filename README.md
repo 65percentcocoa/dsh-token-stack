@@ -35,6 +35,16 @@ Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
 
 统计落盘 `~/.dsh/dsh-memory/stats.json`,**跨会话累计**;也可让 agent 调 `token_stack_stats` 工具。
 
+### GUI 常驻卡片(client 半边)
+
+`package.json` 声明了 `dsh.client`,并随包发布 `lib/client.js`(预构建的 `__ModuleLoader__` bundle)。
+client 半边在 **`shell.overlay`** 注册一张常驻浮层卡片:每 5s 轮询 Host 路由 **`/token-stack/stats`**
+(由本包 host 半边用 `webServer.register` 提供),显示 `filter saved tok` / `calls` / `mem injected tok` /
+`entries` / `sessions` / `tools`,右上角 `−` 可折叠。握手点是纯 HTTP(不依赖 Remote 服务)。
+
+> 卡片需 **重启 dsh + 刷新浏览器** 才出现(`clientModules` 在启动时扫描 `dsh.client` 并把 bundle
+> 注入 index.html;本包发布的是预构建 bundle,无需前端打包步骤)。
+
 ### 字段
 
 - **`filter.tokensSaved`** — **可精确统计**:每次截断时用 `tokenMeter.estimateMessage` 估

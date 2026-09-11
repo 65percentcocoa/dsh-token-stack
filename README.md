@@ -1,13 +1,24 @@
 # dsh-token-stack
 
-Cross-session memory + token-efficiency stack for DeepSeek Harness (DSH).
+Cross-session memory + token-efficiency stack for **DeepSeek Harness (DSH)** — a mountable cordis
+plugin that makes an agent spend fewer tokens without losing correctness.
 
 一个可挂载的 DSH cordis package,整合了三个开源项目的省钱思路
 ([claude-mem](https://github.com/thedotmack/claude-mem) 跨会话记忆、
 [caveman](https://github.com/JuliusBrussee/caveman) terse 输出、
-[rtk](https://github.com/rtk-ai/rtk) 工具输出去噪),并补上原生 `settings` 开关与跨重启自持。
+[rtk](https://github.com/rtk-ai/rtk) 工具输出去噪),并补上**原生 settings 开关、可测的统计、
+GUI 命令与 A/B 对照、以及一张常驻 GUI 卡片**。
 
-## 三层
+## 特性
+
+- **三层省钱**:跨会话记忆(仅首步注入)· terse 输出 · 工具输出去噪 —— 详见下方"工作方式"。
+- **原生 settings** — `tokenStack` 命名空间:`terse`/`memory`/`filter`/`recallLimit`/`abControl`。
+- **可测统计** — 如实区分"精确可测"(工具输出去噪省下的 token)与"反事实 / 需 A/B"(记忆与 terse)。
+- **GUI 命令 + A/B 开关** — `/token-stack [stats | on | off | set key=value]`,一键进入对照条件。
+- **常驻 GUI 卡片** — client 半边在 `shell.overlay` 渲染实时统计卡片(纯 HTTP 取数)。
+- **一条命令安装** — `dsh plugin --profile web add dsh-token-stack`(自带 host bundle patch,免手工改组合)。
+
+## 工作方式(三层)
 
 - **L1 记忆**:监听 `tools/result` 捕获项目证据,`fs` 落盘到 DSH 家目录(
   `~/.dsh/dsh-memory/memory.json`),`systemPrompt.section` **仅首步注入**一次;用 `token_stack_remember`
